@@ -67,7 +67,6 @@
 <!-- Biểu đồ sau PCA -->
 <div id="plotPCA"></div>
 
-<!-- Add this after the plots -->
 <div id="chatbot" style="margin-top: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
     <h3>Phân tích nhóm khách hàng</h3>
     <div id="chat-messages" style="height: 300px; overflow-y: auto; margin-bottom: 10px; padding: 10px; border: 1px solid #eee; background-color: white; border-radius: 4px;"></div>
@@ -237,7 +236,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
         });
 
         const data = await response.json();
-        clusterStats = data.cluster_stats;  // Store cluster stats
+        clusterStats = data.cluster_stats;  // Lưu trữ số liệu thống kê cụm
 
         if (data.error) {
             alert('Lỗi server: ' + data.error);
@@ -304,7 +303,7 @@ async function sendMessage() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Add enter key support for chat
+// Thêm đề xuất
 document.getElementById('chat-input').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         sendMessage();
