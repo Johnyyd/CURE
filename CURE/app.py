@@ -8,8 +8,6 @@ import json
 
 app = Flask(__name__)
 
-# Giả sử bạn đã cài thư viện cure clustering, ví dụ: pip install cure-clustering
-# Nếu chưa có, bạn cần cài hoặc tự cài đặt thuật toán CURE.
 try:
     from cure import CURE
 except ImportError:
@@ -198,7 +196,7 @@ def chat():
         message = data['message'].lower()
         stats = data['cluster_stats']
         
-        # Enhanced analysis of clusters based on user query
+        # Phân tích các cụm dựa trên truy vấn của người dùng
         response = analyze_clusters_ai(message, stats)
         return jsonify({"response": response})
 
@@ -206,7 +204,7 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 def analyze_clusters_ai(message, stats):
-    # Advanced pattern matching for natural language understanding
+    # So khớp mẫu 
     if any(word in message for word in ["so sánh", "khác nhau", "khác biệt"]):
         return compare_clusters(stats)
     
@@ -245,7 +243,7 @@ def get_key_characteristics(stats):
         response += f"{group}:\n"
         means = data["mean"]
         stds = data["std"]
-        # Find the most distinctive features (highest z-scores compared to other groups)
+        # Tìm những đặc điểm nổi bật nhất
         distinctive = []
         for field in means:
             other_means = [s["mean"][field] for g, s in stats.items() if g != group]
@@ -263,20 +261,20 @@ def get_key_characteristics(stats):
 def identify_patterns(stats):
     response = "Các xu hướng và mẫu trong dữ liệu:\n\n"
     
-    # Analyze correlations between features within each cluster
+    # Phân tích mối tương quan
     for group, data in stats.items():
         response += f"{group}:\n"
         means = data["mean"]
-        # Find features that move together
+        # Tìm các đặc điểm
         features = list(means.keys())
         patterns = []
         for i, f1 in enumerate(features):
             for f2 in features[i+1:]:
-                if abs(means[f1] - means[f2]) < 0.5:  # Similar values
+                if abs(means[f1] - means[f2]) < 0.5:  # Giá trị tương tự
                     patterns.append(f"{f1} và {f2} có giá trị tương đương")
         if patterns:
             response += "  Các đặc điểm liên quan:\n"
-            for pattern in patterns[:3]:  # Show top 3 patterns
+            for pattern in patterns[:3]:  # Hiển thị 3 mẫu ảnh hưởng
                 response += f"  - {pattern}\n"
     return response
 
@@ -320,7 +318,7 @@ def analyze_distributions(stats):
 def general_cluster_analysis(stats):
     response = "Tổng quan về các nhóm khách hàng:\n\n"
     
-    # Overall size analysis
+    # phân tích kích thước tổng thể
     total = sum(data["size"] for data in stats.values())
     largest = max(stats.items(), key=lambda x: x[1]["size"])
     smallest = min(stats.items(), key=lambda x: x[1]["size"])
@@ -329,12 +327,12 @@ def general_cluster_analysis(stats):
     response += f"Nhóm lớn nhất: {largest[0]} ({largest[1]['size']} khách hàng)\n"
     response += f"Nhóm nhỏ nhất: {smallest[0]} ({smallest[1]['size']} khách hàng)\n\n"
     
-    # Key characteristics of each group
+    # Đặc điểm chính của từng nhóm
     response += "Đặc điểm chính của từng nhóm:\n"
     for group, data in stats.items():
         response += f"\n{group}:\n"
         means = data["mean"]
-        # Find the most extreme values
+        # Tìm giá trị cực đại nhất
         sorted_features = sorted(means.items(), key=lambda x: abs(x[1]), reverse=True)
         for feature, value in sorted_features[:3]:
             response += f"  - {feature}: {value:.2f}\n"
